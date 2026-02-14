@@ -1,0 +1,27 @@
+{
+    "extends": "fastify-tsconfig",
+    "compilerOptions": {
+        "outDir": "dist",
+        "sourceMap": true,
+        "target": "ES2022",
+        "module": "nodenext",
+        "moduleResolution": "NodeNext",
+        "esModuleInterop": true,
+        "strict": true,
+        "resolveJsonModule": true,
+        "skipLibCheck": true,
+    },
+    "include": [
+        "plugins/**/*.ts",
+        "routes/**/*.ts",
+        "util/**/*.ts",
+        "app.ts",
+        "types.ts",
+    ],
+    "exclude": [
+        "node_modules",
+        "scripts",
+        "dist",
+        "*.json",
+    ]
+}

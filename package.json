@@ -1,0 +1,56 @@
+{
+  "name": "kofi-webhook-storage-api",
+  "version": "0.1.0",
+  "description": "A simple API to collect and access Ko-fi webhook data.",
+  "main": "app.ts",
+  "type": "module",
+  "private": true,
+  "directories": {
+    "test": "test"
+  },
+  "fastify": {
+    "ignore-watch": [
+      "node_modules",
+      "dist"
+    ],
+    "require": "ts-node/register"
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "start": "fastify start -l info -p $PORT -a 0.0.0.0 dist/app.js",
+    "start:dev:wait": "wait-on dist/app.js && fastify start -w -l info -P dist/app.js",
+    "dev": "concurrently -k \"npm run clean && npm run watch\" \"npm run start:dev:wait\"",
+    "test": "npm run build && node --test test/**/*.test.js"
+  },
+  "keywords": [
+    "ko-fi",
+    "api"
+  ],
+  "author": "lrmn",
+  "license": "MIT",
+  "dependencies": {
+    "@fastify/autoload": "^6.0.0",
+    "@fastify/formbody": "^8.0.2",
+    "@fastify/sensible": "^6.0.0",
+    "@fastify/type-provider-typebox": "^5.1.0",
+    "@sinclair/typebox": "^0.34.37",
+    "date-fns": "^4.1.0",
+    "dotenv": "^17.0.1",
+    "fastify": "^5.4.0",
+    "fastify-cli": "^7.4.0",
+    "fastify-plugin": "^5.0.0",
+    "lokijs": "^1.5.12"
+  },
+  "devDependencies": {
+    "@types/lokijs": "^1.5.14",
+    "@types/node": "^24.0.10",
+    "concurrently": "^9.2.0",
+    "fastify-tsconfig": "^3.0.0",
+    "rimraf": "^6.0.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3",
+    "wait-on": "^8.0.3"
+  }
+}
