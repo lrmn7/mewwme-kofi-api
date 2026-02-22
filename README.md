@@ -1,31 +1,30 @@
+# Mewwme Ko-fi API
 
-# Ko-fi Webhook Storage API
+A simple API to collect and access Ko-fi webhook data.
 
-API sederhana untuk mengumpulkan dan mengakses data webhook Ko-fi.
+I created this project because **Ko-fi does not provide an official API** to fetch all subscription/donation data at once.  
+The only way to fully access your complete Ko-fi data is by **storing incoming webhooks**, then processing them yourself.
 
-Saya membuat project ini karena **Ko-fi tidak menyediakan API resmi** untuk mengambil semua data subscription/donation sekaligus.  
-Satu-satunya cara untuk mendapatkan seluruh data secara lengkap adalah dengan **menyimpan webhook yang dikirim Ko-fi**, lalu mengolahnya sendiri.
+With this project, you can easily:
+- view all donations that have ever been received
+- view all subscriptions that have ever been received
+- retrieve a list of **currently active subscriptions**
 
-Dengan project ini, kamu bisa dengan mudah:
-- melihat semua donation yang pernah masuk
-- melihat semua subscription yang pernah masuk
-- mengambil daftar **subscription yang masih aktif**
-
-Dokumentasi webhook Ko-fi:
+Ko-fi webhook documentation:  
 https://help.ko-fi.com/hc/en-us/articles/360004162298
 
 ---
 
-## ✨ Fitur Utama
+## ✨ Main Features
 
-✅ Menyimpan semua webhook Ko-fi ke database lokal (JSON / LokiJS)  
-✅ Endpoint untuk membaca data donation & subscription  
-✅ Endpoint untuk mengambil **subscription aktif**  
-✅ Keamanan endpoint menggunakan token (API_TOKEN)  
-✅ Verifikasi webhook Ko-fi menggunakan KO_FI_VERIFICATION_TOKEN  
+✅ Stores all Ko-fi webhooks into a local database (JSON / LokiJS)  
+✅ Endpoints to retrieve donation & subscription data  
+✅ Endpoint to fetch **active subscriptions**  
+✅ Secures endpoints using an API token (API_TOKEN)  
+✅ Verifies Ko-fi webhooks using KO_FI_VERIFICATION_TOKEN  
 
-⚠️ Catatan:
-Project ini **tidak mendukung**:
+⚠️ Note:  
+This project **does not support**:
 - commissions
 - shop orders/items
 - shipping information
@@ -36,40 +35,40 @@ Project ini **tidak mendukung**:
 
 ### Webhook Receiver
 - `POST /webhooks/ko-fi`  
-  Endpoint ini digunakan Ko-fi untuk mengirim webhook.
+  This endpoint is used by Ko-fi to send webhook events.
 
-### Donation
+### Donations
 - `GET /donations`  
-  Mengambil semua payload donation yang pernah diterima.
+  Fetches all donation payloads that have been received.
 
-### Subscription
+### Subscriptions
 - `GET /subscriptions`  
-  Mengambil semua payload subscription yang pernah diterima.
+  Fetches all subscription payloads that have been received.
 
-### Subscription Aktif
+### Active Subscriptions
 - `GET /subscriptions/active`  
-  Mengambil daftar subscription yang masih aktif (berdasarkan timestamp pembayaran terakhir).
+  Fetches all subscriptions that are still active (based on the latest payment timestamp).
 
 ---
 
 ## 🔐 Authentication & Security
 
 ### 1. Webhook Verification (Ko-fi)
-Endpoint webhook (`POST /webhooks/ko-fi`) akan memverifikasi request menggunakan:
+The webhook endpoint (`POST /webhooks/ko-fi`) verifies incoming requests using:
 
 - `KO_FI_VERIFICATION_TOKEN`
 
-Token ini berasal dari:
+This token can be found here:  
 https://ko-fi.com/manage/webhooks
 
-Tujuannya adalah memastikan webhook benar-benar berasal dari Ko-fi, bukan pihak lain.
+Its purpose is to ensure that the webhook request is truly sent by Ko-fi, not a third party.
 
 ---
 
 ### 2. API Token (GET Endpoints)
-Semua endpoint `GET` diproteksi dengan `API_TOKEN`, supaya data donation/subscription tidak bisa diakses sembarang orang.
+All `GET` endpoints are protected using `API_TOKEN`, so your donation/subscription data cannot be accessed publicly.
 
-Contoh penggunaan:
+Example usage:
 
 ```sh
 curl -H "Authorization: Bearer YOUR_API_TOKEN" http://localhost:3000/subscriptions
@@ -79,19 +78,19 @@ curl -H "Authorization: Bearer YOUR_API_TOKEN" http://localhost:3000/subscriptio
 
 ## ⚙️ Setup
 
-1. Copy file `.env.example` menjadi `.env`
+1. Copy `.env.example` to `.env`
 
-2. Isi variabel mandatory berikut:
+2. Fill in the following mandatory variables:
 
 ### Mandatory Environment Variables
 
 * `KO_FI_VERIFICATION_TOKEN`
-  Token verifikasi webhook yang kamu dapatkan dari dashboard Ko-fi.
+  The webhook verification token you get from your Ko-fi dashboard.
 
 * `API_TOKEN`
-  Token private untuk mengakses endpoint `GET`.
+  A private token required to access all `GET` endpoints.
 
-  Kamu bisa generate token random menggunakan:
+  You can generate a random token using:
 
 ```sh
 openssl rand -hex 24
@@ -102,14 +101,14 @@ openssl rand -hex 24
 ### Optional Environment Variables
 
 * `TEST_WEBHOOKS`
-  Mengatur apakah webhook "test" dari dashboard Ko-fi ikut disimpan.
+  Controls whether test webhooks from the Ko-fi dashboard should be stored.
 
-  Nilai:
+  Values:
 
-  * `0` = tidak disimpan
-  * `1` = disimpan
+  * `0` = do not store
+  * `1` = store
 
-Contoh:
+Example:
 
 ```env
 TEST_WEBHOOKS=0
@@ -117,7 +116,7 @@ TEST_WEBHOOKS=0
 
 ---
 
-## ▶️ Menjalankan Project
+## ▶️ Running the Project
 
 ### Development
 
@@ -134,42 +133,40 @@ npm run --silent start
 
 ---
 
-## 📤 Export Semua Data Webhook
+## 📤 Export All Webhook Data
 
-Kamu bisa export semua data webhook yang sudah tersimpan menggunakan script:
+You can export all stored webhook payloads using this script:
 
 ```sh
 node scripts/export.js ./path/to/kofi_data.json
 ```
 
-Hasil export akan disimpan sebagai file:
+The exported output will be saved as:
 
 ```
 webhookPayloads.json
 ```
 
-di directory tempat command dijalankan.
+in the directory where the command is executed.
 
 ---
 
-## 📌 Kenapa Project Ini Dibutuhkan?
+## 📌 Why This Project Exists
 
-Ko-fi hanya mengirim data lewat webhook secara real-time.
-Artinya jika kamu ingin melihat semua subscription aktif atau riwayat donation lengkap, kamu harus:
+Ko-fi only provides data through real-time webhooks.
+This means if you want to see all active subscriptions or your full donation history, you must:
 
-1. menerima webhook
-2. menyimpannya ke database
-3. membuat endpoint sendiri untuk membacanya
+1. receive webhook events
+2. store them in a database
+3. create your own API endpoints to read the data
 
-Project ini menyelesaikan semua itu secara otomatis.
-
----
-
-## 🧾 Contoh Use Case
-
-* Sistem premium Discord bot berbasis Ko-fi
-* Dashboard membership Ko-fi
-* Menghitung subscription aktif dalam 30 hari terakhir
-* Menyimpan semua riwayat donasi untuk laporan atau analitik
+This project automates the entire process.
 
 ---
+
+## 🧾 Example Use Cases
+
+* Ko-fi based premium system for a Discord bot
+* Ko-fi membership dashboard
+* Counting active subscriptions from the last 30 days
+* Storing full donation history for reports or analytics

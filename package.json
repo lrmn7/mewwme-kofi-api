@@ -1,5 +1,5 @@
 {
-  "name": "kofi-webhook-storage-api",
+  "name": "mewwme-kofi-api",
   "version": "0.1.0",
   "description": "A simple API to collect and access Ko-fi webhook data.",
   "main": "app.ts",
